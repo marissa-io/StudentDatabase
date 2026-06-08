@@ -1,60 +1,78 @@
-#include "StudentGradeSystem.h"
+#include <iostream>
+#include "Student.h"
+using namespace std;
 
 int main()
 {
-	srand(time(0));
+	Student students[STUDENT_MAX];
+	int count = 0;
 
-	//array of 20-23 student structs
-	Student students[MAX_STUDENTS];
-
-	//2D array of student w/ random assigned marks for assignments
-	double grades[MAX_STUDENTS][NUM_ASSIGNMENTS];
-
-	int count = 0; //keeps track of num of current students in system
-
-	loadStudents(students, count); //initial load of students
-
-	generateGrades(grades, count); //initializes grades for existing students
-
-	calculateAverages(grades, students, count);
+	loadStudents(students, count);
+	calculateAllAverages(students, count);
 
 	int choice;
 
-	do {
-
-		//menu
-		cout << "\n===== STUDENT SYSTEM =====\n";
-		cout << "1. Display All Student Info\n";
-		cout << "2. Update Assignment\n";
-		cout << "3. Add Student\n";
-		cout << "4. Save to File\n";
-		cout << "5. Highlight Student/Assignment\n";
-		cout << "6. Exit\n";
-		cout << "Enter a choice: ";
+	do
+	{
+		cout << "\n===== STUDENT DATABASE =====\n";
+		cout << "1. Display\n";
+		cout << "2. Search by Course\n";
+		cout << "3. Assignment Averages\n";
+		cout << "4. Hardest Assignment\n";
+		cout << "5. Course Enrollment\n";
+		cout << "6. Sort by Averages\n";
+		cout << "7. Add Student\n";
+		cout << "8. At Risk Students\n";
+		cout << "9. Exit\n";
+		cout << endl;
+		cout << "Enter Choice: ";
 		cin >> choice;
 
-		//switch statement
-		switch (choice) {
+		switch (choice)
+		{
 		case 1:
-			displayAllStudentInfo(grades, students, count);
-			break;
-		case 2:
-			updateAssignment(grades, students, count);
-			break;
-		case 3:
-			addStudent(students, count, grades);
-			break;
-		case 4:
-			saveStudents(students, count);
-			break;
-		case 5:
-			highlightSearch(grades, students, count);
-			break;
-		case 6:
-			cout << "Goodbye!\n";
+		{
+			displayStudents(students, count);
 			break;
 		}
-	} while (choice != 6);
+		case 2:
+		{
+			searchByCourse(students, count);
+			break;
+		}
+		case 3:
+		{
+			showAssignmentAverage(students, count);
+			break;
+		}
+		case 4:
+		{
+			showHardestAssignment(students, count);
+			break;
+		}
+		case 5:
+		{
+			courseEnrollment(students, count);
+			break;
+		}
+		case 6:
+		{
+			sortByAverage(students, count);
+			break;
+		}
+		case 7:
+		{
+			addStudent(students, count);
+			break;
+		}
+		case 8:
+		{
+			atRiskStudents(students, count);
+			break;
+		}
+		default:
+			cout << "\nInvalid choice!" << endl;
+		}//end of swithch
 
-	return 0;
-}
+	} while (choice != 9);
+}//end of main
