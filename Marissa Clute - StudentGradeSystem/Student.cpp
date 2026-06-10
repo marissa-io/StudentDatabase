@@ -36,6 +36,11 @@ void loadStudents(Student students[], int& count) {
 
     while (!inFile.eof() && count < STUDENT_MAX) {
         inFile >> students[count].firstName;
+
+        if (inFile.fail()) {     //i included this to prevent the file from
+            break;              //creating an extra invalid student record at the end when a new student was added.
+        }
+
         inFile >> students[count].lastName;
         inFile >> students[count].id;
 
@@ -64,7 +69,7 @@ void calculateAverage(Student* s) {
 
 void calculateAllAverages(Student students[], int count) {
     for (int i = 0; i < count; i++) {
-        calculateAverage(students);
+        calculateAverage(&students[i]);
     }
 
 }
@@ -106,13 +111,18 @@ void showHardestAssignment(Student students[], int count) {
     double lowestAverage = 100;
     int hardestAssignment = 0;
 
-    for (int i = 0; i < count; i++) {
-        for (int j = 0; j < NUM_ASSIGNMENTS; j++) {
-            calculateAllAverages(students, count);
-            if (students[i].average < lowestAverage) {
-                hardestAssignment = j + 1;
-                lowestAverage = students[i].average;
-            }
+    for (int i = 0; i < NUM_ASSIGNMENTS; i++) {
+        double sum = 0;
+
+        for (int j = 0; j < count; j++) {
+            sum += students[j].assignments[i];
+        }
+
+        double avg = sum / count;
+
+        if (avg < lowestAverage) {
+            lowestAverage = avg;
+            hardestAssignment = i + 1;
         }
     }
     cout << "Hardest Assignment: A" << hardestAssignment << " (" << lowestAverage << ")\n";
@@ -174,8 +184,10 @@ void sortByAverage(Student students[], int count) {
 
 
 void addStudent(Student students[], int& count) {
-    if (count < STUDENT_MAX) {
-
+    if (count >= STUDENT_MAX) {
+        cout << "Student list has reached maximum capacity!\n";
+        return;
+    }
         cout << "Enter First Name: ";
         cin >> students[count].firstName;
 
@@ -193,7 +205,7 @@ void addStudent(Student students[], int& count) {
             cout << "Enter Course" << i + 1 << ": ";
             cin >> students[count].courses[i];
         }
-    }
+    
 
     calculateAverage(&students[count]);
     count++;
@@ -210,7 +222,28 @@ void atRiskStudents(Student students[], int count) {
         }
 
         if (isAtRisk) {
-            cout << students[i].id << students[i].firstName << students[i].lastName << endl;
+            cout << students[i].id <<" "<< students[i].firstName <<" " << students[i].lastName << endl;
         }
     }
+}
+
+void saveStudents(Student students[], int count) {
+    ofstream outFile("Students90.txt");
+    for (int i = 0; i < count; i++) {
+        outFile << students[i].firstName << " "
+            << students[i].lastName << " "
+            << students[i].id << " ";
+
+        for (int j = 0; j < NUM_ASSIGNMENTS; j++) {
+            outFile << students[i].assignments[j] << " ";
+        }
+          outFile << students[i].average << " ";
+
+          for (int j = 0; j < NUM_COURSES; j++) {
+              outFile << students[i].courses[j] << " ";
+          }
+          outFile << endl;
+    }
+    outFile.close();
+    cout << "Data saved.\n";
 }

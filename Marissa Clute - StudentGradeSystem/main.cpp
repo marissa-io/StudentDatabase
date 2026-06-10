@@ -23,7 +23,8 @@ int main()
 		cout << "6. Sort by Averages\n";
 		cout << "7. Add Student\n";
 		cout << "8. At Risk Students\n";
-		cout << "9. Exit\n";
+		cout << "9. Save Student\n";
+		cout << "10. Exit\n";
 		cout << endl;
 		cout << "Enter Choice: ";
 		cin >> choice;
@@ -70,9 +71,17 @@ int main()
 			atRiskStudents(students, count);
 			break;
 		}
+		case 9:
+		{
+			saveStudents(students, count);
+			break;
+		}
+		case 10: {
+			cout << "Goodbye!" << endl;
+		}
 		default:
 			cout << "\nInvalid choice!" << endl;
-		}//end of swithch
+		}//end of switch
 
-	} while (choice != 9);
+	} while (choice != 10);
 }//end of main
