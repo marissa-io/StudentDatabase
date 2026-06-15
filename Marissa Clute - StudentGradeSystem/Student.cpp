@@ -1,61 +1,70 @@
 #include "Student.h"
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 
 // ================= DISPLAY =================
-void displayStudents(Student students[], int count)
+void displayStudents(StudentNode* head)
 {
-    cout << "\nID\tLName\t\tFName\t\t";
+    cout << "\n"
+        << setw(8) << "ID"
+        << setw(15) << "LName"
+        << setw(15) << "FName";
 
-    for (int j = 0; j < NUM_ASSIGNMENTS; j++)
-        cout << "A" << j + 1 << "\t";
+    for (int j = 0; j < NUM_ASSIGNMENTS; j++) {
+        cout << setw(6) << ("A" + to_string(j + 1));
+    }
+    cout << setw(8) << "AVG"
+        << setw(10) << "C1"
+        << setw(10) << "C2"
+        << setw(10) << "C3"
+        << endl;
 
-    cout << "AVG\tC1\tC2\tC3\n";
+    StudentNode* current = head;
+    while (current != nullptr) {
+        cout << setw(8) << current->data.id
+            << setw(15) << current->data.lastName
+            << setw(15) << current->data.firstName;
 
-    for (int i = 0; i < count; i++)
-    {
-        cout << students[i].id << "\t"
-            << students[i].lastName << "      \t"
-            << students[i].firstName << "      \t";
+        for (int j = 0; j < NUM_ASSIGNMENTS; j++) {
+            cout << setw(6) << current->data.assignments[j];
+        }
+        cout << setw(8) << current->data.average;
 
-        for (int j = 0; j < NUM_ASSIGNMENTS; j++)
-            cout << students[i].assignments[j] << "\t";
-
-        cout << students[i].average << "\t";
-
-        for (int j = 0; j < NUM_COURSES; j++)
-            cout << students[i].courses[j] << "\t";
-
+        for (int j = 0; j < NUM_COURSES; j++) {
+            cout << setw(10) << current->data.courses[j];
+        }
         cout << endl;
+
+        current = current->next; //move to next node
     }
 }
 
-void loadStudents(Student students[], int& count) {
-    ifstream inFile("Students90.txt");
-
-
-    while (!inFile.eof() && count < STUDENT_MAX) {
-        inFile >> students[count].firstName;
-
-        if (inFile.fail()) {     //i included this to prevent the file from
-            break;              //creating an extra invalid student record at the end when a new student was added.
-        }
-
-        inFile >> students[count].lastName;
-        inFile >> students[count].id;
-
-        for (int i = 0; i < NUM_ASSIGNMENTS; i++) {
-            inFile >> students[count].assignments[i];
-        }
-        inFile >> students[count].average;
-
-        for (int i = 0; i < NUM_COURSES; i++) {
-            inFile >> students[count].courses[i];
-        }
-
-        count++;
+void loadStudents(StudentNode*& head) {
+    ifstream file("Students90.txt");
+    if (!file) {
+        cout << "Error opening file!" << endl;
+        return;
     }
-    inFile.close();
+
+    Student tempStudent;
+
+    while (file >> tempStudent.firstName >> tempStudent.lastName >> tempStudent.id) {
+        for (int j = 0; j < NUM_ASSIGNMENTS; j++) {
+            file >> tempStudent.assignments[j];
+        }
+        file >> tempStudent.average;
+
+        for (int j = 0; j < NUM_COURSES; j++) {
+            file >> tempStudent.courses[j];
+        }
+        StudentNode* newNode = new StudentNode();
+        newNode->data = tempStudent;
+
+        newNode->next = head;
+        head = newNode;
+    }
+    file.close();
 }
 
 void calculateAverage(Student* s) {
@@ -67,30 +76,36 @@ void calculateAverage(Student* s) {
     s->average = total / NUM_ASSIGNMENTS;
 }
 
-void calculateAllAverages(Student students[], int count) {
-    for (int i = 0; i < count; i++) {
-        calculateAverage(&students[i]);
-    }
+void calculateAllAverages(StudentNode* head) {
 
+    StudentNode* current = head;
+    while (current != nullptr) {
+        calculateAverage(&current->data);
+
+        current = current->next;
+    }
 }
 
 
-void searchByCourse(Student students[], int count) {
+void searchByCourse(StudentNode* head) {
     string course;
+    StudentNode* current = head;
 
     cout << "Enter Course: ";
     cin >> course;
 
-    for (int i = 0; i < count; i++) {
+    while (current != nullptr) {
+
         for (int j = 0; j < NUM_COURSES; j++) {
 
-            if (students[i].courses[j] == course) {
-                cout << students[i].id << " "
-                    << students[i].firstName << " "
-                    << students[i].lastName << endl;
+            if (current->data.courses[j] == course) {
+                cout << current->data.id << " "
+                    << current->data.firstName << " "
+                    << current->data.lastName << endl;
             }
-
         }
+        current = current->next;
+
     }
 }
 
