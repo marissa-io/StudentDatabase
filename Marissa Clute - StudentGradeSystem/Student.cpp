@@ -188,24 +188,24 @@ void addStudent(Student students[], int& count) {
         cout << "Student list has reached maximum capacity!\n";
         return;
     }
-        cout << "Enter First Name: ";
-        cin >> students[count].firstName;
+    cout << "Enter First Name: ";
+    cin >> students[count].firstName;
 
-        cout << "Enter Last Name: ";
-        cin >> students[count].lastName;
+    cout << "Enter Last Name: ";
+    cin >> students[count].lastName;
 
-        cout << "Enter ID: ";
-        cin >> students[count].id;
+    cout << "Enter ID: ";
+    cin >> students[count].id;
 
-        for (int i = 0; i < NUM_ASSIGNMENTS; i++) {
-            cout << "Enter A" << i + 1 << " mark: ";
-            cin >> students[count].assignments[i];
-        }
-        for (int i = 0; i < NUM_COURSES; i++) {
-            cout << "Enter Course" << i + 1 << ": ";
-            cin >> students[count].courses[i];
-        }
-    
+    for (int i = 0; i < NUM_ASSIGNMENTS; i++) {
+        cout << "Enter A" << i + 1 << " mark: ";
+        cin >> students[count].assignments[i];
+    }
+    for (int i = 0; i < NUM_COURSES; i++) {
+        cout << "Enter Course" << i + 1 << ": ";
+        cin >> students[count].courses[i];
+    }
+
 
     calculateAverage(&students[count]);
     count++;
@@ -222,7 +222,7 @@ void atRiskStudents(Student students[], int count) {
         }
 
         if (isAtRisk) {
-            cout << students[i].id <<" "<< students[i].firstName <<" " << students[i].lastName << endl;
+            cout << students[i].id << " " << students[i].firstName << " " << students[i].lastName << endl;
         }
     }
 }
@@ -237,12 +237,12 @@ void saveStudents(Student students[], int count) {
         for (int j = 0; j < NUM_ASSIGNMENTS; j++) {
             outFile << students[i].assignments[j] << " ";
         }
-          outFile << students[i].average << " ";
+        outFile << students[i].average << " ";
 
-          for (int j = 0; j < NUM_COURSES; j++) {
-              outFile << students[i].courses[j] << " ";
-          }
-          outFile << endl;
+        for (int j = 0; j < NUM_COURSES; j++) {
+            outFile << students[i].courses[j] << " ";
+        }
+        outFile << endl;
     }
     outFile.close();
     cout << "Data saved.\n";
